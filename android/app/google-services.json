@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "62478877637",
+    "project_id": "hr-attendance-f5152",
+    "storage_bucket": "hr-attendance-f5152.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62478877637:android:c5597e50ac9c3598bd41ac",
+        "android_client_info": {
+          "package_name": "com.example.hr_attendance"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBu8TIjtUye7VOT5KgOxZGyggJE2CHZSA0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
