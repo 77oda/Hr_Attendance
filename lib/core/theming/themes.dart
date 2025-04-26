@@ -6,22 +6,23 @@ import 'package:hr_attendance/core/theming/colors.dart';
 ThemeData lightMode() => ThemeData(
   scaffoldBackgroundColor: Colors.white,
   primaryColor: ColorsManager.primaryColor,
-  // appBarTheme: const AppBarTheme(
-  //   backgroundColor: Colors.white,
-  //   elevation: 0,
-  //   actionsIconTheme: IconThemeData(color: Colors.black),
-  //   titleTextStyle: TextStyle(
-  //     color: Colors.black,
-  //     fontWeight: FontWeight.bold,
-  //     fontSize: 23,
-  //   ),
-  //   iconTheme: IconThemeData(color: Colors.black),
-  //   systemOverlayStyle: SystemUiOverlayStyle(
-  //     statusBarBrightness: Brightness.dark,
-  //     statusBarColor: Colors.white,
-  //     statusBarIconBrightness: Brightness.dark,
-  //   ),
-  // ),
+  appBarTheme: const AppBarTheme(
+    surfaceTintColor: Colors.white,
+    backgroundColor: Colors.white,
+    elevation: 0,
+    actionsIconTheme: IconThemeData(color: Colors.black),
+    // titleTextStyle: TextStyle(
+    //   color: Colors.black,
+    //   fontWeight: FontWeight.bold,
+    //   fontSize: 23,
+    // ),
+    // iconTheme: IconThemeData(color: Colors.black),
+    // systemOverlayStyle: SystemUiOverlayStyle(
+    //   statusBarBrightness: Brightness.dark,
+    //   statusBarColor: Colors.white,
+    //   statusBarIconBrightness: Brightness.dark,
+    // ),
+  ),
   inputDecorationTheme: InputDecorationTheme(
     // focusedBorder: OutlineInputBorder(
     //   borderRadius: BorderRadius.circular(10),

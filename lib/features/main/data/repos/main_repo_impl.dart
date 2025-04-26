@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:hr_attendance/core/networking/firebase_failures.dart';
-import 'package:hr_attendance/core/utils/constants.dart';
+import 'package:hr_attendance/core/theming/constants.dart';
 import 'package:hr_attendance/features/main/data/model/empoloyee.dart';
 import 'package:hr_attendance/features/main/data/repos/main_repo.dart';
 

@@ -1,5 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:hr_attendance/core/utils/finger_print_auth.dart';
+import 'package:hr_attendance/core/utils/location_service.dart';
+import 'package:hr_attendance/core/widgets/show_snack_bar.dart';
+import 'package:hr_attendance/features/attendance/presentation/widget/distance_error.dart';
+import 'package:hr_attendance/features/attendance/presentation/widget/distance_success.dart';
+import 'package:hr_attendance/features/attendance/presentation/widget/location_error.dart';
 
 class AttendanceScreen extends StatefulWidget {
   const AttendanceScreen({super.key});
@@ -9,59 +16,101 @@ class AttendanceScreen extends StatefulWidget {
 }
 
 class _AttendanceScreenState extends State<AttendanceScreen> {
-  bool hasCheckedIn = false;
+  LocationService locationService = LocationService();
+  double? currentDistance;
+  Timer? retryTimer;
+  bool locationError = false;
+  bool isMockLocation = false;
 
-  // void initState() {
-  //   super.initState();
-  //   checkIfCheckedIn();
-  // }
-  // Future<void> checkIfCheckedIn() async {
-  //   final result = await context.read<AttendantCubit>().checkTodayAttendance();
-  //   setState(() {
-  //     hasCheckedIn = result;
-  //   });
-  // }
-  Future<void> handleAttendance() async {
-    final position = await Geolocator.getCurrentPosition();
-    final distance = Geolocator.distanceBetween(
-      position.latitude,
-      position.longitude,
-      30.123456, // إحداثيات الشركة - عدلها
-      31.123456,
-    );
-    print(distance);
+  @override
+  void initState() {
+    super.initState();
+    FingerprintAuth.isDeviceSupported();
+    FingerprintAuth.isFingerPrintEnabled();
+    startLocationTracking();
+  }
 
-    // if (distance <= 50) {
-    //   if (!hasCheckedIn) {
-    //     // await context.read<AttendantCubit>().checkIn();
-    //   } else {
-    //     // await context.read<AttendantCubit>().checkOut();
-    //   }
-    //   // checkIfCheckedIn();
-    // } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('أنت بعيد عن مقر الشركة')), // تنبيه للمستخدم
-    );
-    // }
+  void startLocationTracking() {
+    locationService
+        .getPosition(
+          (distance, position) {
+            if (mounted) {
+              setState(() {
+                currentDistance = distance;
+              });
+            }
+          },
+          (error) {
+            if (mounted) {
+              showSnackBar(error, context); // ✨ تظهر رسالة الخطأ
+              setState(() {
+                isMockLocation = true;
+              });
+            }
+          },
+        )
+        .catchError((error) {
+          if (mounted) {
+            showSnackBar(error.toString(), context);
+          }
+        });
+    // تأكد من عدم إنشاء التايمر إذا كان يعمل بالفعل
+    if (retryTimer == null ||
+        !retryTimer!.isActive && isMockLocation == false) {
+      retryTimer = Timer.periodic(const Duration(seconds: 3), (_) async {
+        bool enabled = await Geolocator.isLocationServiceEnabled();
+        if (enabled) {
+          locationError = false;
+          retryTimer?.cancel(); // وقف التايمر إذا كانت خدمة الموقع مفعلة
+          if (mounted) {
+            startLocationTracking(); // إعادة تتبع الموقع
+          }
+        } else {
+          if (mounted) {
+            setState(() {
+              locationError = true;
+            });
+            locationService
+                .stopListening(); // إيقاف الاستماع إذا كانت خدمة الموقع غير مفعلة
+          }
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    locationService.stopListening();
+    retryTimer?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('تسجيل الحضور والانصراف')),
-      body: Center(
-        child: ElevatedButton.icon(
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            backgroundColor: hasCheckedIn ? Colors.red : Colors.green,
-          ),
-          icon: const Icon(Icons.fingerprint, size: 32),
-          label: Text(
-            hasCheckedIn ? 'تسجيل الانصراف' : 'تسجيل الحضور',
-            style: const TextStyle(fontSize: 20),
-          ),
-          onPressed: handleAttendance,
+      appBar: AppBar(
+        title: Text(
+          'تسجيل الحضور والانصراف',
+          style: Theme.of(context).textTheme.headlineLarge,
         ),
+      ),
+      body: Builder(
+        builder: (_) {
+          // إذا كانت خدمة الموقع غير مفعلة
+          if (locationError) {
+            return LocationError();
+          }
+          // إذا كانت المسافة غير موجودة (أي أن التطبيق لا يزال يقوم بتحميل الموقع)
+          if (currentDistance == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          // إذا كانت المسافة أقل من 20 متر
+          if (currentDistance! <= 25) {
+            return DistanceSuccess();
+          }
+          // إذا كانت المسافة أكبر من 20 متر
+          return DistanceError(distance: currentDistance!);
+        },
       ),
     );
   }

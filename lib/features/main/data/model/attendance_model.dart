@@ -2,26 +2,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AttendanceModel {
   final String status; // حضور / غياب / إجازة
-  final String? checkIn;
-  final String? checkOut;
-  final String? note;
-  final GeoPoint? location;
+  final Timestamp? checkIn;
+  final Timestamp? checkOut;
+  final Timestamp? date;
 
   AttendanceModel({
     required this.status,
     this.checkIn,
     this.checkOut,
-    this.note,
-    this.location,
+    this.date,
   });
 
   factory AttendanceModel.fromJson(Map<String, dynamic> json) {
     return AttendanceModel(
       status: json['status'],
-      checkIn: json['checkIn'],
-      checkOut: json['checkOut'],
-      note: json['note'],
-      location: json['location'],
+      checkIn: json['checkIn'] != null ? json['checkIn'] as Timestamp : null,
+      checkOut: json['checkOut'] != null ? json['checkOut'] as Timestamp : null,
+      date: json['date'] != null ? json['date'] as Timestamp : null,
     );
   }
 
@@ -30,8 +27,7 @@ class AttendanceModel {
       'status': status,
       'checkIn': checkIn,
       'checkOut': checkOut,
-      'note': note,
-      'location': location,
+      'date': date,
     };
   }
 }

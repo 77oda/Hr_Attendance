@@ -1,8 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hr_attendance/core/helpers/cacheHelper.dart';
-import 'package:hr_attendance/core/utils/constants.dart';
+import 'package:hr_attendance/core/theming/constants.dart';
 import 'package:hr_attendance/core/utils/service_locator.dart';
+import 'package:hr_attendance/features/attendance/logic/cubit/attendance_cubit.dart';
 import 'package:hr_attendance/features/attendance/presentation/attendace_screen.dart';
 import 'package:hr_attendance/features/auth/logic/login_cubit/login_cubit.dart';
 import 'package:hr_attendance/features/auth/presentation/login_screen.dart';
@@ -65,7 +66,11 @@ abstract class AppRouter {
 
       GoRoute(
         path: attendanceScreen,
-        builder: (context, state) => AttendanceScreen(),
+        builder:
+            (context, state) => BlocProvider(
+              create: (context) => getIt<AttendanceCubit>(),
+              child: AttendanceScreen(),
+            ),
       ),
     ],
   );
