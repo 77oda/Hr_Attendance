@@ -44,11 +44,11 @@ class LocationService {
     ).listen(
       (Position? position) async {
         if (position != null) {
-          if (isMockLocation(position)) {
-            await stopListening();
-            onError('الموقع مزيف. يرجى التأكد من إعدادات الجهاز.');
-            return;
-          }
+          // if (isMockLocation(position)) {
+          //   await stopListening();
+          //   onError('الموقع مزيف. يرجى التأكد من إعدادات الجهاز.');
+          //   return;
+          // }
           distance = Geolocator.distanceBetween(
             position.latitude,
             position.longitude,

@@ -9,7 +9,6 @@ class OtpPinCodeFields extends StatelessWidget {
   Widget build(BuildContext context) {
     return PinCodeTextField(
       appContext: context,
-      autoFocus: true,
       cursorColor: Colors.black,
       keyboardType: TextInputType.number,
       length: 6,
@@ -33,7 +32,6 @@ class OtpPinCodeFields extends StatelessWidget {
       enableActiveFill: true,
       onCompleted: (submitedCode) {
         // otpCode = submitedCode;
-        print("Completed");
       },
       onChanged: (value) {
         print(value);

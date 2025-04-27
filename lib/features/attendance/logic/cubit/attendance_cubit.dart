@@ -1,10 +1,10 @@
 import 'dart:convert';
-
+import 'package:intl/intl.dart'; // للتعامل مع الوقت بشكل مناسب
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hr_attendance/core/helpers/cacheHelper.dart';
 import 'package:hr_attendance/features/attendance/data/model/checkType_enum.dart';
 import 'package:hr_attendance/features/attendance/data/repos/attendance_repo.dart';
 import 'package:hr_attendance/features/attendance/logic/cubit/attendance_state.dart';
-import 'package:http/http.dart' as http;
 
 class AttendanceCubit extends Cubit<AttendanceState> {
   AttendanceCubit(this.attendanceRepo) : super(AttendanceInitial());
@@ -18,31 +18,45 @@ class AttendanceCubit extends Cubit<AttendanceState> {
       (l) {
         if (!isClosed) emit(AttendanceError(l.errMessage));
       },
-      (r) {
+      (r) async {
+        await fetchTodayAttendance();
         if (!isClosed) emit(AttendanceSuccess(r));
       },
     );
   }
 
-  // دالة لتسجيل الحضور
-  // Future<void> registerCheckIn(String employeeId) async {
-  //  emit(CheckInLoading());
-  //  final result = await attendanceRepo.registerCheckIn();
-  //    result.fold((l) {
-  //      if (!isClosed)  emit(CheckOutError(l.errMessage));
-  //      }, (r) {
-  //    if (!isClosed)   emit(CheckInSuccess());
-  //   });
-  // }
+  Map<String, dynamic>? checkInMap;
+  Map<String, dynamic>? checkOutMap;
+  Future<void> fetchTodayAttendance() async {
+    await resetAttendance();
+    String? checkInString = await CacheHelper.getData(key: 'checkIn');
+    String? checkOutString = await CacheHelper.getData(key: 'checkOut');
+    if (checkInString != null) checkInMap = jsonDecode(checkInString);
+    if (checkOutString != null) checkOutMap = jsonDecode(checkOutString);
+    if (!isClosed) emit(AttendanceFetched());
+  }
 
-  // // دالة لتسجيل المغادرة
-  // Future<void> registerCheckOut(String employeeId) async {
-  //   emit(CheckOutLoading());
-  //  final result = await attendanceRepo.registerCheckOut();
-  //    result.fold((l) {
-  //      if (!isClosed)  emit(CheckOutError(l.errMessage));
-  //      }, (r) {
-  //    if (!isClosed)   emit(CheckOutSuccess());
-  //   });
-  // }
+  Future<void> resetAttendance() async {
+    final now = DateTime.now();
+    final today = DateFormat('yyyy-MM-dd').format(now);
+
+    String? data = await CacheHelper.getData(key: 'checkIn');
+
+    if (data != null) {
+      Map<String, dynamic> dataMap = jsonDecode(data);
+      String? savedDate = dataMap['date'];
+
+      print(savedDate);
+      print(today); // التاريخ اللي كنت مخزنه مع الحضور
+
+      if (savedDate != today) {
+        // اليوم اللي مخزن غير اليوم الحالي → امسح الداتا
+        await CacheHelper.removeData('checkIn');
+        await CacheHelper.removeData('checkOut');
+        checkInMap = null;
+        checkOutMap = null;
+        if (!isClosed) emit(AttendanceReset());
+      }
+    }
+  }
 }

@@ -11,7 +11,6 @@ class MainScreen extends StatelessWidget {
     return
     //  MultiBlocProvider(
     //   providers: [
-    //     BlocProvider(create: (_) => EmployeeCubit()..fetchEmployee(phone)),
     //     BlocProvider(
     //       create: (_) => AttendantCubit()
     //         ..fetchMonthlyAttendance(phone, DateTime.now().year, DateTime.now().month),

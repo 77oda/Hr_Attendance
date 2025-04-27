@@ -23,7 +23,7 @@ class EmployeeInfoShimmer extends StatelessWidget {
           highlightColor: Colors.grey.shade100,
           child: Container(
             height: 20.h,
-            width: 100.w,
+            width: 150.w,
             color: Colors.grey.shade300,
           ),
         ),

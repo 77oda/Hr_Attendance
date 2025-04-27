@@ -68,7 +68,8 @@ abstract class AppRouter {
         path: attendanceScreen,
         builder:
             (context, state) => BlocProvider(
-              create: (context) => getIt<AttendanceCubit>(),
+              create:
+                  (context) => getIt<AttendanceCubit>()..fetchTodayAttendance(),
               child: AttendanceScreen(),
             ),
       ),

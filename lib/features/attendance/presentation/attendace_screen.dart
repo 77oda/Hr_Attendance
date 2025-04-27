@@ -4,7 +4,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:hr_attendance/core/utils/finger_print_auth.dart';
 import 'package:hr_attendance/core/utils/location_service.dart';
 import 'package:hr_attendance/core/widgets/show_snack_bar.dart';
-import 'package:hr_attendance/features/attendance/presentation/widget/distance_error.dart';
 import 'package:hr_attendance/features/attendance/presentation/widget/distance_success.dart';
 import 'package:hr_attendance/features/attendance/presentation/widget/location_error.dart';
 
@@ -19,6 +18,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   LocationService locationService = LocationService();
   double? currentDistance;
   Timer? retryTimer;
+
   bool locationError = false;
   bool isMockLocation = false;
 
@@ -88,12 +88,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'تسجيل الحضور والانصراف',
-          style: Theme.of(context).textTheme.headlineLarge,
-        ),
-      ),
+      appBar: AppBar(title: Text('تسجيل الحضور والانصراف')),
       body: Builder(
         builder: (_) {
           // إذا كانت خدمة الموقع غير مفعلة
@@ -109,7 +104,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             return DistanceSuccess();
           }
           // إذا كانت المسافة أكبر من 20 متر
-          return DistanceError(distance: currentDistance!);
+          return DistanceSuccess();
         },
       ),
     );

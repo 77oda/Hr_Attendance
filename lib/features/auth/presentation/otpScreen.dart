@@ -6,23 +6,25 @@ import 'package:hr_attendance/features/auth/presentation/widget/otp_widget/otp_p
 
 class OtpScreen extends StatelessWidget {
   const OtpScreen({super.key});
-  // late String otpCode;
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Container(
-          margin: EdgeInsets.symmetric(horizontal: 32.w, vertical: 88.h),
-          child: Column(
-            children: [
-              OtpIntroText(),
-              SizedBox(height: 70.h),
-              OtpPinCodeFields(),
-              SizedBox(height: 70.h),
-              OtpButton(),
-            ],
+    return Scaffold(
+      // resizeToAvoidBottomInset: true, // مهم عند فتح الكيبورد
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 88.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                OtpIntroText(),
+                SizedBox(height: 70.h),
+                OtpPinCodeFields(),
+                SizedBox(height: 70.h),
+                OtpButton(),
+              ],
+            ),
           ),
         ),
       ),

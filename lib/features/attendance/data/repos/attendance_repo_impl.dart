@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+import 'package:hr_attendance/core/helpers/cacheHelper.dart';
 import 'package:hr_attendance/core/networking/firebase_failures.dart';
 import 'package:hr_attendance/core/theming/constants.dart';
 import 'package:hr_attendance/features/attendance/data/model/checkType_enum.dart';
@@ -26,12 +27,14 @@ class AttendanceRepoImpl extends AttendanceRepo {
               .collection('attendance')
               .doc(date)
               .get();
-      if (!_isWeekend()) {
+      if (!_isWeekend(dateTime)) {
         if (type == CheckType.checkIn) {
           if (snapshot.exists) {
             return left(ServerFailure('تم تسجيل الحضور بالفعل'));
           } else {
-            await registerCheckIn(date: date, time: time);
+            await registerCheckIn(date: date, time: time).then((snapshot) {});
+            Map<String, dynamic> data = {'time': time, 'date': date};
+            CacheHelper.setData(key: 'checkIn', value: jsonEncode(data));
             return right('تم تسجيل الحضور بنجاح');
           }
         }
@@ -40,6 +43,8 @@ class AttendanceRepoImpl extends AttendanceRepo {
           if (snapshot.exists) {
             if (snapshot.data()!['checkOut'] == null) {
               await registerCheckOut(date: date, time: time);
+              Map<String, dynamic> data = {'time': time, 'date': date};
+              CacheHelper.setData(key: 'checkOut', value: jsonEncode(data));
               return right('تم تسجيل الانصراف بنجاح ');
             } else {
               return left(ServerFailure('تم تسجيل الانصراف بالفعل'));
@@ -84,8 +89,8 @@ class AttendanceRepoImpl extends AttendanceRepo {
     }
   }
 
-  bool _isWeekend() {
-    final currentDay = DateTime.now().weekday;
+  bool _isWeekend(DateTime dateTime) {
+    final currentDay = dateTime.weekday;
     return currentDay == DateTime.friday || currentDay == DateTime.saturday;
   }
 
@@ -103,13 +108,13 @@ class AttendanceRepoImpl extends AttendanceRepo {
         .doc(date)
         .set(attendanceModel.toJson());
   }
-}
 
-Future<void> registerCheckOut({required time, required date}) async {
-  await FirebaseFirestore.instance
-      .collection('employees')
-      .doc(phoneNumber)
-      .collection('attendance')
-      .doc(date)
-      .update({'checkOut': time});
+  Future<void> registerCheckOut({required time, required date}) async {
+    await FirebaseFirestore.instance
+        .collection('employees')
+        .doc(phoneNumber)
+        .collection('attendance')
+        .doc(date)
+        .update({'checkOut': time});
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hr_attendance/core/helpers/cacheHelper.dart';
 import 'package:hr_attendance/core/utils/app_router.dart';
 
 AppBar mainAppBar(context) {
@@ -12,8 +13,10 @@ AppBar mainAppBar(context) {
         padding: EdgeInsets.only(left: 10.w),
         child: IconButton(
           icon: const Icon(Icons.fingerprint),
-          onPressed: () {
+          onPressed: () async {
             GoRouter.of(context).push(AppRouter.attendanceScreen);
+            // await CacheHelper.removeData('checkIn');
+            // await CacheHelper.removeData('checkOut');
           },
         ),
       ),

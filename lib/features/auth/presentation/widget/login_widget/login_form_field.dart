@@ -32,7 +32,6 @@ class LoginFormField extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(6.r)),
             ),
             child: TextFormField(
-              autofocus: true,
               style: Theme.of(context).textTheme.headlineMedium,
               decoration: const InputDecoration(border: InputBorder.none),
               cursorColor: ColorsManager.primaryColor,
