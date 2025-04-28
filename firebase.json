@@ -1,1 +1,35 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"hr-attendance-f5152","appId":"1:62478877637:android:c5597e50ac9c3598bd41ac","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"hr-attendance-f5152","configurations":{"android":"1:62478877637:android:c5597e50ac9c3598bd41ac","ios":"1:62478877637:ios:b4c542c95856e75abd41ac"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "hr-attendance-f5152",
+          "appId": "1:62478877637:android:c5597e50ac9c3598bd41ac",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "hr-attendance-f5152",
+          "configurations": {
+            "android": "1:62478877637:android:c5597e50ac9c3598bd41ac",
+            "ios": "1:62478877637:ios:b4c542c95856e75abd41ac"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
+}
