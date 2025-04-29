@@ -80,4 +80,14 @@ ThemeData lightMode() => ThemeData(
       color: ColorsManager.primaryColor,
     ),
   ),
+  colorScheme: ColorScheme.light(
+    onSecondary: Colors.white,
+    secondary: ColorsManager.primaryColor,
+    primary: ColorsManager.primaryColor,
+    onPrimary: Colors.white,
+    onSurface: ColorsManager.primaryColor,
+  ),
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(foregroundColor: ColorsManager.primaryColor),
+  ),
 );

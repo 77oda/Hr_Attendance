@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:hr_attendance/core/utils/finger_print_auth.dart';
 import 'package:hr_attendance/core/utils/location_service.dart';
 import 'package:hr_attendance/core/widgets/show_snack_bar.dart';
+import 'package:hr_attendance/features/attendance/presentation/widget/distance_error.dart';
 import 'package:hr_attendance/features/attendance/presentation/widget/distance_success.dart';
 import 'package:hr_attendance/features/attendance/presentation/widget/location_error.dart';
 
@@ -104,7 +105,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             return DistanceSuccess();
           }
           // إذا كانت المسافة أكبر من 20 متر
-          return DistanceSuccess();
+          return DistanceError(distance: currentDistance!);
         },
       ),
     );

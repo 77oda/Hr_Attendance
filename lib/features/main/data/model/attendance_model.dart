@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class AttendanceModel {
   final String status; // حضور / غياب / إجازة
   final String? checkIn;

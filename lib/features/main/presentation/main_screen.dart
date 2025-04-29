@@ -8,16 +8,7 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-    //  MultiBlocProvider(
-    //   providers: [
-    //     BlocProvider(
-    //       create: (_) => AttendantCubit()
-    //         ..fetchMonthlyAttendance(phone, DateTime.now().year, DateTime.now().month),
-    //     ),
-    //   ],
-    // child:
-    Scaffold(
+    return Scaffold(
       appBar: mainAppBar(context),
       drawer: MainDrawer(),
       body: MainBody(),

@@ -9,6 +9,8 @@ import 'package:hr_attendance/features/auth/logic/login_cubit/login_cubit.dart';
 import 'package:hr_attendance/features/auth/presentation/login_screen.dart';
 import 'package:hr_attendance/features/auth/presentation/otpScreen.dart';
 import 'package:hr_attendance/features/main/logic/employee_cubit/employee_cubit.dart';
+import 'package:hr_attendance/features/main/logic/fetch_attendance_cubit/fetch_attendance_cubit.dart';
+import 'package:hr_attendance/features/main/logic/selected_date_cubit/selected_date_cubit.dart';
 import 'package:hr_attendance/features/main/presentation/main_screen.dart';
 
 abstract class AppRouter {
@@ -59,6 +61,13 @@ abstract class AppRouter {
                 BlocProvider(
                   create: (context) => getIt<EmployeeCubit>()..fetchEmployee(),
                 ),
+                BlocProvider(
+                  create:
+                      (context) =>
+                          getIt<FetchAttendanceCubit>()
+                            ..fetchAttandanceData(selectedDate: DateTime.now()),
+                ),
+                BlocProvider(create: (context) => getIt<SelectedDateCubit>()),
               ],
               child: MainScreen(),
             ),
