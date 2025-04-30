@@ -1,7 +1,4 @@
-import 'dart:convert';
-import 'package:intl/intl.dart'; // للتعامل مع الوقت بشكل مناسب
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hr_attendance/core/helpers/cacheHelper.dart';
 import 'package:hr_attendance/features/attendance/data/model/checkType_enum.dart';
 import 'package:hr_attendance/features/attendance/data/repos/attendance_repo.dart';
 import 'package:hr_attendance/features/attendance/logic/cubit/attendance_state.dart';
@@ -27,36 +24,11 @@ class AttendanceCubit extends Cubit<AttendanceState> {
 
   Map<String, dynamic>? checkInMap;
   Map<String, dynamic>? checkOutMap;
+
   Future<void> fetchTodayAttendance() async {
-    await resetAttendance();
-    String? checkInString = await CacheHelper.getData(key: 'checkIn');
-    String? checkOutString = await CacheHelper.getData(key: 'checkOut');
-    if (checkInString != null) checkInMap = jsonDecode(checkInString);
-    if (checkOutString != null) checkOutMap = jsonDecode(checkOutString);
+    await attendanceRepo.fetchTodayAttendance();
+    checkInMap = attendanceRepo.checkInMap;
+    checkOutMap = attendanceRepo.checkOutMap;
     if (!isClosed) emit(AttendanceFetched());
-  }
-
-  Future<void> resetAttendance() async {
-    final now = DateTime.now();
-    final today = DateFormat('yyyy-MM-dd').format(now);
-
-    String? data = await CacheHelper.getData(key: 'checkIn');
-
-    if (data != null) {
-      Map<String, dynamic> dataMap = jsonDecode(data);
-      String? savedDate = dataMap['date'];
-
-      print(savedDate);
-      print(today); // التاريخ اللي كنت مخزنه مع الحضور
-
-      if (savedDate != today) {
-        // اليوم اللي مخزن غير اليوم الحالي → امسح الداتا
-        await CacheHelper.removeData('checkIn');
-        await CacheHelper.removeData('checkOut');
-        checkInMap = null;
-        checkOutMap = null;
-        if (!isClosed) emit(AttendanceReset());
-      }
-    }
   }
 }

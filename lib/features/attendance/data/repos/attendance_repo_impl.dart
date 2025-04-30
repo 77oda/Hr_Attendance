@@ -117,4 +117,48 @@ class AttendanceRepoImpl extends AttendanceRepo {
         .doc(date)
         .update({'checkOut': time});
   }
+
+  @override
+  Map<String, dynamic>? checkInMap;
+  @override
+  Map<String, dynamic>? checkOutMap;
+
+  @override
+  Future<Either<Failure, void>> fetchTodayAttendance() async {
+    try {
+      await resetAttendance();
+      String? checkInString = await CacheHelper.getData(key: 'checkIn');
+      String? checkOutString = await CacheHelper.getData(key: 'checkOut');
+      if (checkInString != null) checkInMap = jsonDecode(checkInString);
+      if (checkOutString != null) checkOutMap = jsonDecode(checkOutString);
+      return right(null);
+    } on SocketException catch (error) {
+      // إذا حصل خطأ في الاتصال بالشبكة
+      return left(ServerFailure('خطأ في الاتصال بالشبكة'));
+    } on TimeoutException catch (error) {
+      // في حالة المهلة انتهت
+      return left(ServerFailure('انتهت المهلة، حاول مرة أخرى'));
+    } catch (error) {
+      return left(ServerFailure(error.toString()));
+    }
+  }
+
+  Future<void> resetAttendance() async {
+    final dateTime = await fetchTime();
+    final today = DateFormat('yyyy-MM-dd').format(dateTime);
+    String? data = await CacheHelper.getData(key: 'checkIn');
+
+    if (data != null) {
+      Map<String, dynamic> dataMap = jsonDecode(data);
+      String? savedDate = dataMap['date'];
+
+      if (savedDate != today) {
+        // اليوم اللي مخزن غير اليوم الحالي → امسح الداتا
+        await CacheHelper.removeData('checkIn');
+        await CacheHelper.removeData('checkOut');
+        checkInMap = null;
+        checkOutMap = null;
+      }
+    }
+  }
 }

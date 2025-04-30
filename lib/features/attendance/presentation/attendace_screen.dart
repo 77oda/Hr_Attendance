@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hr_attendance/core/utils/finger_print_auth.dart';
 import 'package:hr_attendance/core/utils/location_service.dart';
+import 'package:hr_attendance/core/widgets/app_logo.dart';
 import 'package:hr_attendance/core/widgets/show_snack_bar.dart';
 import 'package:hr_attendance/features/attendance/presentation/widget/distance_error.dart';
 import 'package:hr_attendance/features/attendance/presentation/widget/distance_success.dart';
+import 'package:hr_attendance/features/attendance/presentation/widget/live_tracking_indicator.dart';
 import 'package:hr_attendance/features/attendance/presentation/widget/location_error.dart';
 
 class AttendanceScreen extends StatefulWidget {
@@ -89,7 +92,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('تسجيل الحضور والانصراف')),
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: AppLogo(),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(left: 20.w, right: 12.w),
+            child: Icon(Icons.location_on_outlined, size: 24.r),
+          ),
+        ],
+      ),
       body: Builder(
         builder: (_) {
           // إذا كانت خدمة الموقع غير مفعلة
@@ -98,7 +110,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           }
           // إذا كانت المسافة غير موجودة (أي أن التطبيق لا يزال يقوم بتحميل الموقع)
           if (currentDistance == null) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: LiveTrackingIndicator());
           }
           // إذا كانت المسافة أقل من 20 متر
           if (currentDistance! <= 25) {

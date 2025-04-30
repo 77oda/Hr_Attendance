@@ -83,7 +83,9 @@ class AttendanceStatistics extends StatelessWidget {
               animation: false, // احنا عملنا الانيميشن يدوي
               percent: value.clamp(0.0, 1.0),
               center: Text(
-                "${(value * 100).toStringAsFixed(1)}%",
+                (value * 100).toStringAsFixed(1) == 'NaN'
+                    ? '0%'
+                    : "${(value * 100).toStringAsFixed(1)}%",
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               circularStrokeCap: CircularStrokeCap.round,

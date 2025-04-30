@@ -37,7 +37,7 @@ class MainDrawer extends StatelessWidget {
                 DrawerHeader(
                   margin: EdgeInsets.zero,
                   decoration: BoxDecoration(color: ColorsManager.primaryColor),
-                  child: EmployeeInfo(colorText: Colors.white),
+                  child: EmployeeInfo(employee: employee),
                 ),
                 MyDriver(),
                 buildListTile('القسم', employee.department, context),

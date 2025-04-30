@@ -22,5 +22,3 @@ final class AttendanceSuccess extends AttendanceState {
 }
 
 class AttendanceFetched extends AttendanceState {}
-
-class AttendanceReset extends AttendanceState {}
