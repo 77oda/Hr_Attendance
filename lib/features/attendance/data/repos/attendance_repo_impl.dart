@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:hr_attendance/core/helpers/cacheHelper.dart';
 import 'package:hr_attendance/core/networking/firebase_failures.dart';
+import 'package:hr_attendance/core/networking/time_server.dart';
 import 'package:hr_attendance/core/theming/constants.dart';
 import 'package:hr_attendance/features/attendance/data/model/checkType_enum.dart';
 import 'package:hr_attendance/features/attendance/data/repos/attendance_repo.dart';
@@ -16,7 +17,7 @@ class AttendanceRepoImpl extends AttendanceRepo {
   @override
   Future<Either<Failure, String>> checkAttendance(CheckType type) async {
     try {
-      final dateTime = await fetchTime();
+      final dateTime = await TimeServer.fetchTime();
       final date = DateFormat('yyyy-MM-dd').format(dateTime);
       final time = DateFormat('hh:mm a').format(dateTime);
 
@@ -63,29 +64,8 @@ class AttendanceRepoImpl extends AttendanceRepo {
       }
     } on FirebaseException catch (error) {
       return left(ServerFailure.fromFirebase(error));
-    } on SocketException catch (error) {
-      // إذا حصل خطأ في الاتصال بالشبكة
-      return left(ServerFailure('خطأ في الاتصال بالشبكة'));
-    } on TimeoutException catch (error) {
-      // في حالة المهلة انتهت
-      return left(ServerFailure('انتهت المهلة، حاول مرة أخرى'));
     } catch (error) {
       return left(ServerFailure(error.toString()));
-    }
-  }
-
-  Future<DateTime> fetchTime() async {
-    const apiKey = '64ad8287c7234d2da4eeb1a469d41b4c'; // حط مفتاحك هنا
-    final url = Uri.parse(
-      'https://api.ipgeolocation.io/timezone?apiKey=$apiKey&tz=Africa/Cairo',
-    );
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      final dateTimeStr = data['date_time'];
-      return DateTime.parse(dateTimeStr);
-    } else {
-      throw Exception('فشل في جلب الوقت من السيرفر');
     }
   }
 
@@ -144,7 +124,7 @@ class AttendanceRepoImpl extends AttendanceRepo {
   }
 
   Future<void> resetAttendance() async {
-    final dateTime = await fetchTime();
+    final dateTime = await TimeServer.fetchTime();
     final today = DateFormat('yyyy-MM-dd').format(dateTime);
     String? data = await CacheHelper.getData(key: 'checkIn');
 

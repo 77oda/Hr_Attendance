@@ -28,11 +28,15 @@ Future<void> setupServiceLocator() async {
     () => FetchAttendanceCubit(getIt<MainRepoImpl>()),
   );
 
+  // selected date
   getIt.registerFactory<SelectedDateCubit>(() => SelectedDateCubit());
 
   // attendance
   getIt.registerLazySingleton<AttendanceRepoImpl>(() => AttendanceRepoImpl());
   getIt.registerFactory<AttendanceCubit>(
-    () => AttendanceCubit(getIt<AttendanceRepoImpl>()),
+    () => AttendanceCubit(
+      getIt<AttendanceRepoImpl>(),
+      getIt<FetchAttendanceCubit>(),
+    ),
   );
 }

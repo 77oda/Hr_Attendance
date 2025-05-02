@@ -64,8 +64,7 @@ abstract class AppRouter {
                 BlocProvider(
                   create:
                       (context) =>
-                          getIt<FetchAttendanceCubit>()
-                            ..fetchAttandanceData(selectedDate: DateTime.now()),
+                          getIt<FetchAttendanceCubit>()..fetchAttandanceData(),
                 ),
                 BlocProvider(create: (context) => getIt<SelectedDateCubit>()),
               ],

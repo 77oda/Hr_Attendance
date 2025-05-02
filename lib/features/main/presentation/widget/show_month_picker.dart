@@ -26,7 +26,7 @@ class ShowMonthPicker extends StatelessWidget {
           onPressed: () async {
             final picked = await showMonthPicker(
               context: context,
-              initialDate: DateTime.now(),
+              initialDate: selectedDate,
               firstDate: DateTime(2025, 3, 25),
               lastDate: DateTime.now(),
             );
